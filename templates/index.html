@@ -6,6 +6,19 @@
     <title>IT-4320 Trip Reservation System</title>
 </head>
 <body>
+    <nav>
+        <a href="{{ url_for('main')}}">Home</a>
+        <a href="{{ url_for('admin')}}">Admin</a>
+        <a href="{{ url_for('reservation')}}">Reservations</a>
+    </nav>
+
+    <div class="content">
+        {% for message in get_flashed_messages() %}
+            <div class="alert">{{ message }}</div>
+        {% endfor %}
+
+        {% block content %} {% endblock %}
+    </div>
     
 </body>
 </html>
