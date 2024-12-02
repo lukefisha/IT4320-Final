@@ -1,4 +1,4 @@
-from app import Flask, render_template, url_for
+from flask import Flask, render_template, url_for
 import sqlite3
 
 
@@ -26,4 +26,5 @@ def admin():
 def reservation():
     return render_template('reservation.html')
 
-app.run(port=5008, debug=True)
+if __name__ == "__main__":
+    app.run(debug=True)
