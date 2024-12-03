@@ -1,22 +1,29 @@
 {% extends 'index.html' %}
+
 {% block content %}
+<div class="main-box">
     <h2>Administrator Login</h2>
     <hr />
 
     {% if chart %}
-        <h4>Printing Seating Chart...</h4>
-        <- display chart here ->
-        <br>
+        <h4>Seating Chart:</h4>
+        <div class="seating-chart">
+            <p>{{ chart|safe }}</p>
+        </div>
     {% endif %}
 
-    <form id="adminLogin" action="{{url_for('admin')}}" method="POST">
+    <form id="adminLogin" action="{{ url_for('admin') }}" method="POST">
         <label for="username">Username: </label><br />
         <input type="text" id="username" name="username" /><br />
         <br />
         <label for="password">Password:</label><br />
         <input type="text" id="password" name="password" /><br />
         <br />
-        <input type="submit" value="Submit" />
+        <button type="submit">Submit</button>
     </form>
 
+    {% for message in get_flashed_messages() %}
+        <div class="error">{{ message }}</div>
+    {% endfor %}
+</div>
 {% endblock %}
