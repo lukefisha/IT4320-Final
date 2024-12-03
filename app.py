@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template, request, flash
 import sqlite3
 
 
@@ -20,6 +20,26 @@ def main():
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
+    if request.method == 'POST':
+        #get login from form
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        #query the database with the supplied user and pass
+        conn = get_db()
+        admin_login = conn.execute('SELECT * FROM admins WHERE username = ? AND password = ?', (username, password, )).fetchone()
+        conn.close()
+
+        #check if it exists
+        if admin_login:
+            #if so, display chart
+            chart = 1234
+            return render_template('admin.html', chart=chart)
+        else:
+            #if not, display error
+            flash("Invalid username/password combination")
+            return render_template('admin.html')
+
     return render_template('admin.html')
 
 @app.route('/reservations', methods=['GET', 'POST'])

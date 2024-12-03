@@ -1,10 +1,22 @@
 {% extends 'index.html' %}
-
 {% block content %}
-<h2>Administrator Login</h2>
-<hr>
-<form id="adminLogin">
-    
-</form>
+    <h2>Administrator Login</h2>
+    <hr />
+
+    {% if chart %}
+        <h4>Printing Seating Chart...</h4>
+        <- display chart here ->
+        <br>
+    {% endif %}
+
+    <form id="adminLogin" action="{{url_for('admin')}}" method="POST">
+        <label for="username">Username: </label><br />
+        <input type="text" id="username" name="username" /><br />
+        <br />
+        <label for="password">Password:</label><br />
+        <input type="text" id="password" name="password" /><br />
+        <br />
+        <input type="submit" value="Submit" />
+    </form>
 
 {% endblock %}
