@@ -1,6 +1,40 @@
 {% extends 'index.html' %}
 
 {% block content %}
-
+    {% if ticket %}
+        <h3>{{ ticket }}</h3>
+        <br>
+    {% endif %}
+    {% if chart %}
+        <h4>Printing Seating Chart...</h4>
+        <- display chart here ->
+        <br>
+        <h5>{{ chart }}</h5>
+        <br>
+    {% endif %}
+    <form id="reservation" action="{{url_for('reservation')}}" method="POST">
+        <label for="first_name">First Name: </label><br />
+        <input type="text" id="first_name" name="first_name" required/><br />
+        <br />
+        <label for="last_name">Last Name:</label><br />
+        <input type="text" id="last_name" name="last_name" required/><br />
+        <br />
+        <label for="row">Row:</label><br />
+        <select id="row" name="row" required>
+            <option value="" disabled selected>Select a row</option>
+            {% for i in range(1, 13) %}
+                <option value="{{ i }}">{{ i }}</option>
+            {% endfor %}
+        </select><br />
+        <br />
+        <select id="seat" name="seat" required>
+            <option value="" disabled selected>Select a seat</option>
+            {% for i in range(1, 5) %}
+                <option value="{{ i }}">{{ i }}</option>
+            {% endfor %}
+        </select><br />
+        <br />
+        <input type="submit" value="Submit" />
+    </form>
 
 {% endblock %}
