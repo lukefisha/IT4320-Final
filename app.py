@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, flash
+from flask import Flask, render_template, request, flash, redirect, url_for
 import sqlite3
 
 
@@ -30,6 +30,16 @@ def eTicketGenerator(s1, s2):
 
 @app.route('/', methods=['GET', 'POST'])
 def main():
+    if request.method == 'POST':
+        user_option = request.form.get('user_option')
+        
+        if user_option == "admin":
+            return redirect(url_for('admin'))
+        elif user_option == "reservation":
+            return redirect(url_for('reservation'))
+        else:
+            flash("Please select an option before submitting.")
+
     return render_template('main.html')
 
 @app.route('/admin', methods=['GET', 'POST'])

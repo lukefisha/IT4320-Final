@@ -1,6 +1,19 @@
 {% extends 'index.html' %}
 
 {% block content %}
-
-
+<div class="main-box">
+    <h1>IT-4320 Trip Reservation System</h1>
+    <form id="optionForm" method="POST" action="/">
+        <label for="user_option">Choose an Option:</label>
+        <select name="user_option" id="user_option">
+            <option value="">-- Select an option --</option>
+            <option value="admin">Admin Login</option>
+            <option value="reservation">Reserve a Seat</option>
+        </select>
+        <button type="submit">Submit</button>
+    </form>
+    {% for message in get_flashed_messages() %}
+        <p class="error">{{ message }}</p>
+    {% endfor %}
+</div>
 {% endblock %}
