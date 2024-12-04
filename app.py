@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, flash
+from flask import Flask, render_template, request, flash, redirect, url_for
 import sqlite3
 
 
@@ -15,7 +15,7 @@ def get_db():
 
 def eTicketGenerator(s1, s2):
 	# To store the final string 
-	result = "" 
+	result = ""  
 
 	# combine two strings by alternating characters 
 	i = 0
@@ -28,8 +28,41 @@ def eTicketGenerator(s1, s2):
 	return result
 
 
+def generate_seating_chart():
+    total_rows = 12  # defualt
+    total_columns = 4  # default
+
+    # initializes seating chart with Os
+    seating_chart = [['O' for _ in range(total_columns)] for _ in range(total_rows)]
+
+    # get reserved seats from the reservations table
+    conn = get_db()
+    reserved_seats = conn.execute('SELECT seatRow, seatColumn FROM reservations').fetchall()
+    conn.close()
+
+    # mark reserved seats with 'X'
+    for seat in reserved_seats:
+        row = seat['seatRow'] - 1  
+        column = seat['seatColumn'] - 1  
+        if 0 <= row < total_rows and 0 <= column < total_columns:
+            seating_chart[row][column] = 'X'
+
+    # return chart formatted 
+    chart_display = "<br />".join([str(row) for row in seating_chart])
+    return chart_display
+
 @app.route('/', methods=['GET', 'POST'])
 def main():
+    if request.method == 'POST':
+        user_option = request.form.get('user_option')
+        
+        if user_option == "admin":
+            return redirect(url_for('admin'))
+        elif user_option == "reservation":
+            return redirect(url_for('reservation'))
+        else:
+            flash("Please select an option before submitting.")
+
     return render_template('main.html')
 
 @app.route('/admin', methods=['GET', 'POST'])
@@ -47,7 +80,7 @@ def admin():
         #check if it exists
         if admin_login:
             #if so, display chart
-            chart = 1234
+            chart = generate_seating_chart()
             return render_template('admin.html', chart=chart)
         else:
             #if not, display error
@@ -58,7 +91,7 @@ def admin():
 
 @app.route('/reservations', methods=['GET', 'POST'])
 def reservation():
-    chart = 1234
+    chart = generate_seating_chart() #initial chart when page is loaded
 
     if request.method == "POST":
 
@@ -77,11 +110,11 @@ def reservation():
             if not isSeatTaken:
 
                 #insert into table, edit chart, and return chart
-                insert_reservation = conn.execute('INSERT INTO reservations (passengerName, seatRow, seatColumn, eTicketNumber) VALUES (?, ?, ?, ?)', (firstName, row, seat, eTicket))
+                conn.execute('INSERT INTO reservations (passengerName, seatRow, seatColumn, eTicketNumber) VALUES (?, ?, ?, ?)', (firstName, row, seat, eTicket))
                 conn.commit()
 
                 #edit chart and get the updated seating chart
-                chart = 4321
+                chart = generate_seating_chart()
                 conn.close()
 
                 #send ticket information
@@ -99,7 +132,15 @@ def reservation():
         except ValueError as e:
             chart = None
             print("Error fetching data:", e)
+
+        finally:
+            # close database connection
+            if conn:
+                conn.close()
+
     return render_template('reservation.html', chart=chart)
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -1,23 +1,26 @@
 {% extends 'index.html' %}
 
 {% block content %}
+<div class="main-box">
     {% if ticket %}
         <h3>{{ ticket }}</h3>
         <br>
     {% endif %}
+
     {% if chart %}
-        <h4>Printing Seating Chart...</h4>
-        <- display chart here ->
-        <br>
-        <h5>{{ chart }}</h5>
+        <h4>Seating Chart:</h4>
+        <div class="seating-chart">
+            <p>{{ chart|safe }}</p>  
+        </div>
         <br>
     {% endif %}
-    <form id="reservation" action="{{url_for('reservation')}}" method="POST">
+
+    <form id="reservation" action="{{ url_for('reservation') }}" method="POST">
         <label for="first_name">First Name: </label><br />
-        <input type="text" id="first_name" name="first_name" required/><br />
+        <input type="text" id="first_name" name="first_name" required /><br />
         <br />
         <label for="last_name">Last Name:</label><br />
-        <input type="text" id="last_name" name="last_name" required/><br />
+        <input type="text" id="last_name" name="last_name" required /><br />
         <br />
         <label for="row">Row:</label><br />
         <select id="row" name="row" required>
@@ -34,7 +37,7 @@
             {% endfor %}
         </select><br />
         <br />
-        <input type="submit" value="Submit" />
+        <button type="submit">Submit</button>
     </form>
-
+</div>
 {% endblock %}
