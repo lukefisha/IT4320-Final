@@ -42,8 +42,8 @@ def generate_seating_chart():
 
     # mark reserved seats with 'X'
     for seat in reserved_seats:
-        row = seat['seatRow'] - 1  
-        column = seat['seatColumn'] - 1  
+        row = seat['seatRow']  
+        column = seat['seatColumn']  
         if 0 <= row < total_rows and 0 <= column < total_columns:
             seating_chart[row][column] = 'X'
 
