@@ -12,6 +12,10 @@
         </div>
     {% endif %}
 
+    {% if total %}
+        <h4>Total Sales: ${{ total }}</h4>
+    {% endif %}
+
     <form id="adminLogin" action="{{ url_for('admin') }}" method="POST">
         <label for="username">Username: </label><br />
         <input type="text" id="username" name="username" required/><br />

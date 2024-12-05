@@ -51,6 +51,40 @@ def generate_seating_chart():
     chart_display = "<br />".join([str(row) for row in seating_chart])
     return chart_display
 
+def generate_seating_chart_matrix():
+    total_rows = 12  # defualt
+    total_columns = 4  # default
+
+    # initializes seating chart with Os
+    seating_chart = [['O' for _ in range(total_columns)] for _ in range(total_rows)]
+
+    # get reserved seats from the reservations table
+    conn = get_db()
+    reserved_seats = conn.execute('SELECT seatRow, seatColumn FROM reservations').fetchall()
+    conn.close()
+
+    # mark reserved seats with 'X'
+    for seat in reserved_seats:
+        row = seat['seatRow']  
+        column = seat['seatColumn']  
+        if 0 <= row < total_rows and 0 <= column < total_columns:
+            seating_chart[row][column] = 'X'
+    return seating_chart
+
+def get_cost_matrix():
+    cost_matrix = [[100, 75, 50, 100] for row in range(12)]
+    return cost_matrix
+
+def total_cost():
+    price = get_cost_matrix()
+    seating_chart = generate_seating_chart_matrix()
+    total = 0
+    for i in range(len(seating_chart)):
+        for j in range(len(seating_chart[i])):
+            if seating_chart[i][j] == 'X':
+                total += price[i][j]
+    return total
+
 @app.route('/', methods=['GET', 'POST'])
 def main():
     if request.method == 'POST':
@@ -81,7 +115,8 @@ def admin():
         if admin_login:
             #if so, display chart
             chart = generate_seating_chart()
-            return render_template('admin.html', chart=chart)
+            total = total_cost()
+            return render_template('admin.html', chart=chart, total=total)
         else:
             #if not, display error
             flash("Invalid username/password combination")
